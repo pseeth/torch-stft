@@ -17,7 +17,7 @@ def test_stft():
 
     for i in range(12):
         filter_length = 2**i
-        for j in range(i):
+        for j in range(i+1):
             try:
                 hop_length = 2**j
                 stft = STFT(filter_length=filter_length, hop_length=hop_length)
