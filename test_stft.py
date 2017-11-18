@@ -4,9 +4,10 @@ from stft import STFT
 import torch
     
 def test_stft():
-    
     audio, sr = librosa.load('mixture.mp3', sr=None)
-    audio = torch.autograd.Variable(torch.FloatTensor(audio), requires_grad=False).unsqueeze(0).cuda()
+    audio = torch.autograd.Variable(torch.FloatTensor(audio), requires_grad=False).unsqueeze(0)
+    if torch.cuda.is_available():
+        audio = audio.cuda()
     
     def mse(ground_truth, estimated):
         return torch.mean((ground_truth - estimated)**2)
@@ -20,7 +21,8 @@ def test_stft():
             try:
                 hop_length = 2**j
                 stft = STFT(filter_length=filter_length, hop_length=hop_length).cuda()
-
+                if torch.cuda.is_available():
+                    stft = stft.cuda()
                 output = stft(audio)
                 loss = mse(output, audio)
                 print 'MSE: %s @ filter_length = %d, hop_length = %d' % (str(to_np(loss)[0]), filter_length, hop_length)
