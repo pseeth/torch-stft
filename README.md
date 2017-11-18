@@ -1,6 +1,9 @@
 # Audio tools for PyTorch
 
-Right now, just an STFT/iSTFT written up in PyTorch using 1D Convolutions. Test it by just cloning this repo and running python test_stft.py. It should output the following:
+Right now, just an STFT/iSTFT written up in PyTorch using 1D Convolutions. Requirements are a recent version PyTorch and numpy. In older versions of PyTorch, conv1d_transpose may crash and this might not work.
+
+
+Test it by just cloning this repo and running python test_stft.py. It should output the following:
 
     MSE: 6.52442e-19 @ filter_length = 2, hop_length = 1
     MSE: 1.12645e-19 @ filter_length = 4, hop_length = 1
