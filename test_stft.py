@@ -20,7 +20,7 @@ def test_stft():
         for j in range(i):
             try:
                 hop_length = 2**j
-                stft = STFT(filter_length=filter_length, hop_length=hop_length).cuda()
+                stft = STFT(filter_length=filter_length, hop_length=hop_length)
                 if torch.cuda.is_available():
                     stft = stft.cuda()
                 output = stft(audio)
