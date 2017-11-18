@@ -1,6 +1,6 @@
-# Audio tools for PyTorch
+# STFT/iSTFT in PyTorch
 
-Right now, just an STFT/iSTFT written up in PyTorch using 1D Convolutions. Requirements are a recent version PyTorch, numpy, and librosa (for loading audio in test_stft.py). In older versions of PyTorch, conv1d_transpose may crash and this might not work.
+An STFT/iSTFT written up in PyTorch using 1D Convolutions. Requirements are a recent version PyTorch, numpy, and librosa (for loading audio in test_stft.py). In older versions of PyTorch, conv1d_transpose may crash and this might not work.
 
 
 Test it by just cloning this repo and run: 
