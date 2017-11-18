@@ -5,7 +5,7 @@ Right now, just an STFT/iSTFT written up in PyTorch using 1D Convolutions. Requi
 
 Test it by just cloning this repo and run: 
     
-    python test_stft.py. 
+    python test_stft.py 
 
 It should output the following:
 
