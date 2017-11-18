@@ -10,7 +10,7 @@ class STFT(torch.nn.Module):
         self.filter_length = filter_length
         self.hop_length = hop_length
         self.forward_transform = None
-        window = (self.filter_length / self.hop_length) * np.ones(self.filter_length + 1)[:-1]**.5
+        scale = self.filter_length / self.hop_length
         fourier_basis = np.fft.fft(np.eye(self.filter_length))                    
         
         cutoff = int((self.filter_length / 2 + 1))
@@ -19,7 +19,7 @@ class STFT(torch.nn.Module):
         
         self.forward_basis = nn.Parameter(torch.FloatTensor(fourier_basis[:, None, :]), 
                                                 requires_grad = False)
-        self.inverse_basis = nn.Parameter(torch.FloatTensor(np.linalg.pinv(window * fourier_basis).T[:, None, :]), 
+        self.inverse_basis = nn.Parameter(torch.FloatTensor(np.linalg.pinv(scale * fourier_basis).T[:, None, :]), 
                                                 requires_grad = False)
                 
     def transform(self, input_data):
