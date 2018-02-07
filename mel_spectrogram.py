@@ -25,7 +25,6 @@ class MelSpectrogram(torch.nn.Module):
         mel_filters = librosa.filters.mel(self.sample_rate, self.filter_length, self.num_mels).T
         self.mel_filter_bank = torch.FloatTensor(mel_filters)
              
-
     def forward(self, input_data):
         magnitude, phase = self.stft.transform(input_data)
         mel_spectrogram = F.linear(magnitude, self.mel_filter_bank)
