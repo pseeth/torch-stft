@@ -5,7 +5,7 @@ import numpy as np
 from torch.autograd import Variable
 
 class STFT(torch.nn.Module):
-    def __init__(self, filter_length=1024, hop_length=512):
+    def __init__(self, filter_length=1024, hop_length=512, window=torch.ones(1024)):
         super(STFT, self).__init__()
 
         self.filter_length = filter_length
@@ -17,6 +17,9 @@ class STFT(torch.nn.Module):
         cutoff = int((self.filter_length / 2 + 1))
         fourier_basis = np.vstack([np.real(fourier_basis[:cutoff, :]),
                                    np.imag(fourier_basis[:cutoff, :])])
+
+        fourier_basis = fourier_basis * window.numpy()
+
         forward_basis = torch.FloatTensor(fourier_basis[:, None, :])
         inverse_basis = torch.FloatTensor(np.linalg.pinv(scale * fourier_basis).T[:, None, :])
 
@@ -39,12 +42,12 @@ class STFT(torch.nn.Module):
         imag_part = forward_transform[:, cutoff:, :]
 
         magnitude = torch.sqrt(real_part**2 + imag_part**2)
-        phase = torch.autograd.Variable(torch.atan2(imag_part.data, real_part.data))
-        return magnitude, phase
+        angle = torch.autograd.Variable(torch.atan2(imag_part.data, real_part.data))
+        return magnitude, angle
 
-    def inverse(self, magnitude, phase):
-        recombine_magnitude_phase = torch.cat([magnitude*torch.cos(phase),
-                                               magnitude*torch.sin(phase)], dim=1)
+    def inverse(self, magnitude, angle):
+        recombine_magnitude_phase = torch.cat([magnitude*torch.cos(angle),
+                                               magnitude*torch.sin(angle)], dim=1)
 
         inverse_transform = F.conv_transpose1d(recombine_magnitude_phase,
                                                Variable(self.inverse_basis, requires_grad=False),
