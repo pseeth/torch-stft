@@ -10,6 +10,38 @@ Install easily with pip:
 pip install torch_stft
 ```
 
+## Usage
+```
+import torch
+from torch_stft import STFT
+import numpy as np
+import librosa 
+
+audio = librosa.load(librosa.util.example_audio_file(), duration=1.0)[0]
+device = 'cpu'
+filter_length = 1024
+hop_length = 256
+win_length = 1024 # doesn't need to be specified. if not specified, it's the same as filter_length
+window = 'hann'
+
+audio = torch.FloatTensor(audio)
+audio = audio.unsqueeze(0)
+audio = audio.to(device)
+
+stft = STFT(
+    filter_length=filter_length, 
+    hop_length=hop_length, 
+    win_length=win_length,
+    window=window
+).to(device)
+
+magnitude, phase = stft.transform(audio)
+output = stft.inverse(magnitude, phase)
+output = output.cpu().data.numpy()[..., :]
+audio = audio.cpu().data.numpy()[..., :]
+print(np.mean((output - audio) ** 2)) # on order of 1e-17
+```
+
 ## Tests
 Test it by just cloning this repo and running
     
