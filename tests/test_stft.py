@@ -70,10 +70,10 @@ def test_batch_stft():
         _test_stft_on_signal(batched, 1e-10, d)
 
 def test_against_librosa_stft():
-    audio = librosa.load(librosa.util.example_audio_file(), duration=1.0)[0]
-    for i in range(10):
+    audio = librosa.load(librosa.util.example_audio_file(), duration=10.0, offset=30)[0]
+    for i in range(8, 12):
         filter_length = 2**i
-        for j in range(i):
+        for j in range(4, i):
             hop_length = 2**j
             librosa_stft = librosa.stft(audio, n_fft=filter_length, hop_length=hop_length)
             _magnitude = np.abs(librosa_stft)
@@ -84,6 +84,13 @@ def test_against_librosa_stft():
                 stft = _prepare_network(d, filter_length, hop_length)
                 magnitude, phase = stft.transform(_audio)
                 magnitude = magnitude[0].cpu().data.numpy()
+                # commented out but can visualize the stft if needed
+                # import matplotlib.pyplot as plt
+                # plt.subplot(211)
+                # plt.imshow(20*np.log10(1+magnitude), aspect='auto', origin='lower')
+                # plt.subplot(212)
+                # plt.imshow(20*np.log10(1+_magnitude), aspect='auto', origin='lower')
+                # plt.show()
                 phase = phase[0].cpu().data.numpy()
 
                 assert (np.mean((magnitude - _magnitude) ** 2) < 1e-10)
