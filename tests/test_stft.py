@@ -3,6 +3,7 @@ import traceback
 from torch_stft import STFT
 import torch
 import numpy as np
+from torch.nn import MSELoss
 
 def _prepare_audio(input_audio, device):
     audio = torch.FloatTensor(input_audio)
@@ -119,3 +120,28 @@ def test_windows():
             output = output.cpu().data.numpy()[..., :]
             _audio = _audio.cpu().data.numpy()[..., :]
             assert (np.mean((output - _audio) ** 2) < 1e-10)
+
+def dummy_network(input_shape):
+    network = torch.nn.Sequential(
+        torch.nn.Linear(input_shape[-1], input_shape[-1])
+    )
+    return network
+
+def test_backward():
+    audio = np.sin(np.linspace(-np.pi, np.pi, 2 ** 10))
+    device = ['cpu', 'cuda'] if torch.cuda.is_available() else ['cpu']
+    loss_function = MSELoss()
+    n_iter = 1000
+    for d in device:
+        _audio = _prepare_audio(audio, d)
+        input_network = dummy_network(_audio.shape)
+        optimizer = torch.optim.SGD(input_network.parameters(), lr=1e-1)
+        stft = _prepare_network(d, filter_length=256, hop_length=64)
+        for i in range(n_iter):
+            output = input_network(_audio)
+            output = stft.forward(output)
+            loss = loss_function(_audio, output)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+        assert (loss.item() < 1e-7)
