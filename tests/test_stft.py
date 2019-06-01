@@ -29,9 +29,9 @@ def _test_stft_on_signal(input_audio, atol):
 def test_stft():
     # White noise
     test_audio = []
-    seed = np.random.RandomState(0)
-    x1 = seed.randn(2 ** 15)
-    test_audio.append((x1, 1e-6))
+    # seed = np.random.RandomState(0)
+    # x1 = seed.randn(2 ** 15)
+    # test_audio.append((x1, 1e-6))
 
     # Sin wave
     x2 = np.sin(np.linspace(-np.pi, np.pi, 2 ** 15))
@@ -50,8 +50,8 @@ def test_batch_stft():
     batched = []
     batch_size = 10
     for i in range(int(batch_size / 2)):
-        x1 = seed.randn(2 ** 15)
-        batched.append(x1)
+        # x1 = seed.randn(2 ** 15)
+        # batched.append(x1)
         # Sin wave
         x2 = np.sin(np.linspace(-np.pi, np.pi, 2 ** 15))
         batched.append(x2)
