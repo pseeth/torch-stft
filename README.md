@@ -16,8 +16,9 @@ import torch
 from torch_stft import STFT
 import numpy as np
 import librosa 
+import matplotlib.pyplot as plt
 
-audio = librosa.load(librosa.util.example_audio_file(), duration=1.0)[0]
+audio = librosa.load(librosa.util.example_audio_file(), duration=10.0, offset=30)[0]
 device = 'cpu'
 filter_length = 1024
 hop_length = 256
@@ -39,8 +40,12 @@ magnitude, phase = stft.transform(audio)
 output = stft.inverse(magnitude, phase)
 output = output.cpu().data.numpy()[..., :]
 audio = audio.cpu().data.numpy()[..., :]
-print(np.mean((output - audio) ** 2)) # on order of 1e-17
+print(np.mean((output - audio) ** 2)) # on order of 1e-16
 ```
+
+Output of [`compare_stft.py`](compare_stft.py):
+
+![images/stft.png](images/stft.png)
 
 ## Tests
 Test it by just cloning this repo and running
