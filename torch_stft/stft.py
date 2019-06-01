@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 import torch.nn.functional as F
-from torch.autograd import Variable
 from scipy.signal import get_window
 from librosa.util import pad_center, tiny
 from .util import window_sumsquare

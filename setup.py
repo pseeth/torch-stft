@@ -16,7 +16,7 @@ EXTRAS={
 
 setup(
     name="torch_stft",
-    version="0.1.2",
+    version="0.1.3",
     description="An STFT/iSTFT for PyTorch",
     long_description=long_description,
     long_description_content_type="text/markdown",
