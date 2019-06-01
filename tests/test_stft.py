@@ -34,11 +34,11 @@ def test_stft():
 
     # Sin wave
     x2 = np.sin(np.linspace(-np.pi, np.pi, 2 ** 15))
-    test_audio.append((x2, 1e-7))
+    test_audio.append((x2, 1e-6))
 
     # Music file
     x3 = librosa.load(librosa.util.example_audio_file(), duration=1.0)[0]
-    test_audio.append((x3, 1e-7))
+    test_audio.append((x3, 1e-6))
     device = ['cpu', 'cuda'] if torch.cuda.is_available() else ['cpu']
 
     for x, atol in test_audio:
