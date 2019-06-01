@@ -21,16 +21,13 @@ class STFT(torch.nn.Module):
             hop_length {int} -- Hop length of STFT (restrict to 50% overlap between frames) (default: {512})
             win_length {[type]} -- Length of the window function applied to each frame (if not specified, it
                 equals the filter length). (default: {None})
-            window {str} -- Type of window to use (for now only supports 'hann' windows or no windowing 
-                (window=None)) (default: {'hann'})
+            window {str} -- Type of window to use (options are bartlett, hann, hamming, blackman, blackmanharris) 
+                (default: {'hann'})
         """
         super(STFT, self).__init__()
         self.filter_length = filter_length
         self.hop_length = hop_length
         self.win_length = win_length if win_length else filter_length
-        supported_windows = [None, 'hann']
-        if window not in supported_windows:
-            raise ValueError('window %s is not in %s'.format(window, str(supported_windows)))
         self.window = window
         self.forward_transform = None
         self.pad_amount = int(self.filter_length / 2)
@@ -40,21 +37,19 @@ class STFT(torch.nn.Module):
         cutoff = int((self.filter_length / 2 + 1))
         fourier_basis = np.vstack([np.real(fourier_basis[:cutoff, :]),
                                    np.imag(fourier_basis[:cutoff, :])])
-
         forward_basis = torch.FloatTensor(fourier_basis[:, None, :])
         inverse_basis = torch.FloatTensor(
             np.linalg.pinv(scale * fourier_basis).T[:, None, :])
 
-        if window is not None:
-            assert(filter_length >= win_length)
-            # get window and zero center pad it to filter_length
-            fft_window = get_window(window, win_length, fftbins=True)
-            fft_window = pad_center(fft_window, filter_length)
-            fft_window = torch.from_numpy(fft_window).float()
+        assert(filter_length >= self.win_length)
+        # get window and zero center pad it to filter_length
+        fft_window = get_window(window, self.win_length, fftbins=True)
+        fft_window = pad_center(fft_window, filter_length)
+        fft_window = torch.from_numpy(fft_window).float()
 
-            # window the bases
-            forward_basis *= fft_window
-            inverse_basis *= fft_window
+        # window the bases
+        forward_basis *= fft_window
+        inverse_basis *= fft_window
 
         self.register_buffer('forward_basis', forward_basis.float())
         self.register_buffer('inverse_basis', inverse_basis.float())
@@ -87,7 +82,7 @@ class STFT(torch.nn.Module):
 
         forward_transform = F.conv1d(
             input_data,
-            Variable(self.forward_basis, requires_grad=False),
+            self.forward_basis,
             stride=self.hop_length,
             padding=0)
 
@@ -119,7 +114,7 @@ class STFT(torch.nn.Module):
 
         inverse_transform = F.conv_transpose1d(
             recombine_magnitude_phase,
-            Variable(self.inverse_basis, requires_grad=False),
+            self.inverse_basis,
             stride=self.hop_length,
             padding=0)
 
