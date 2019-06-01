@@ -23,7 +23,7 @@ def _test_stft_on_signal(input_audio, atol, device):
             output = stft(audio)
             output = output.cpu().data.numpy()[..., :]
             _audio = audio.cpu().data.numpy()[..., :]
-            assert (np.allclose(output, _audio, atol=atol))
+            assert (np.mean((output - _audio) ** 2) < atol)
 
 def test_stft():
     # White noise
