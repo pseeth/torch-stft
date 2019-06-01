@@ -7,7 +7,7 @@ An STFT/iSTFT written up in PyTorch using 1D Convolutions. Requirements are a re
 ## Installation
 Install easily with pip:
 ```
-pip install torch_stft
+pip install torch-stft
 ```
 
 ## Usage
