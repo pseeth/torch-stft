@@ -4,12 +4,11 @@ from torch_stft import STFT
 import torch
 import numpy as np
     
-def _test_stft_on_signal(input_audio, atol):
+def _test_stft_on_signal(input_audio, atol, device):
     audio = torch.FloatTensor(input_audio)
     if len(audio.shape) < 2:
         audio = audio.unsqueeze(0)
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     audio = audio.to(device)
 
     for i in range(10):
@@ -40,9 +39,11 @@ def test_stft():
     # Music file
     x3 = librosa.load(librosa.util.example_audio_file(), duration=1.0)[0]
     test_audio.append((x3, 1e-7))
+    device = ['cpu', 'cuda'] if torch.cuda.is_available() else ['cpu']
 
     for x, atol in test_audio:
-        _test_stft_on_signal(x, atol)
+        for d in device:
+            _test_stft_on_signal(x, atol, d)
 
 def test_batch_stft():
     # White noise
@@ -56,5 +57,7 @@ def test_batch_stft():
         x2 = np.sin(np.linspace(-np.pi, np.pi, 2 ** 15))
         batched.append(x2)
 
+    device = ['cpu', 'cuda'] if torch.cuda.is_available() else ['cpu']
     batched = np.vstack(batched)
-    _test_stft_on_signal(batched, 1e-6)
+    for d in device:
+        _test_stft_on_signal(batched, 1e-6, d)
