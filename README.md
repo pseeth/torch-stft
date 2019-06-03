@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/pseeth/pytorch-stft.svg?branch=master)](https://travis-ci.com/pseeth/torch-stft)
+[![Build Status](https://travis-ci.com/pseeth/torch-stft.svg?branch=master)](https://travis-ci.com/pseeth/torch-stft)
 
 # STFT/iSTFT in PyTorch
 
