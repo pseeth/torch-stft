@@ -2,6 +2,8 @@
 
 # STFT/iSTFT in PyTorch
 
+Author: [Prem Seetharaman](http://pseeth.github.io)
+
 An STFT/iSTFT written up in PyTorch using 1D Convolutions. Requirements are a recent version PyTorch, numpy, and librosa (for loading audio in test_stft.py). Thanks to Shrikant Venkataramani for sharing code this was based off of and Rafael Valle for catching bugs and adding the proper windowing logic. Uses Python 3.
 
 ## Installation
